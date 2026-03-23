@@ -142,7 +142,7 @@ body[data-layout-mode="mobile"] .summary-cards {
 }
 
 body[data-layout-mode="mobile"] .map {
-  min-height: 460px;
+  min-height: 560px;
 }
 
 body[data-layout-mode="mobile"] .selection-info,

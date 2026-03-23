@@ -209,7 +209,24 @@ function adjustedForCostOfLiving(monthlyTakeHome, colIndex) {
   return monthlyTakeHome * (100 / colIndex);
 }
 
-function buildStateViewData(input) {
+function getColorbarConfig(title, isMobile) {
+  if (!isMobile) {
+    return { title };
+  }
+  return {
+    title: { text: title, side: "top", font: { size: 10 } },
+    thickness: 10,
+    len: 0.42,
+    x: 0.98,
+    xanchor: "right",
+    y: 0.02,
+    yanchor: "bottom",
+    tickfont: { size: 9 },
+    bgcolor: "rgba(255,255,255,0.75)"
+  };
+}
+
+function buildStateViewData(input, isMobile) {
   const locations = [];
   const z = [];
   const customdata = [];
@@ -228,7 +245,7 @@ function buildStateViewData(input) {
     locations,
     z,
     customdata,
-    colorbar: { title: "Monthly take-home" },
+    colorbar: getColorbarConfig("Monthly take-home", isMobile),
     marker: { line: { color: "#ffffff", width: 0.7 } },
     hovertemplate:
       "<b>%{customdata[0]}</b><br>Estimated state income tax: %{customdata[2]:$,.0f}/yr (%{customdata[1]:.2%})<br>Take-home: %{z:$,.0f}/mo<extra></extra>",
@@ -236,7 +253,7 @@ function buildStateViewData(input) {
   };
 }
 
-function buildCountyViewData(input) {
+function buildCountyViewData(input, isMobile) {
   const locations = [];
   const z = [];
   const customdata = [];
@@ -265,7 +282,7 @@ function buildCountyViewData(input) {
     z,
     featureidkey: "id",
     customdata,
-    colorbar: { title: "COL-adjusted monthly" },
+    colorbar: getColorbarConfig("COL-adjusted monthly", isMobile),
     marker: { line: { color: "#f5f7ff", width: 0.1 } },
     hovertemplate:
       "<b>%{customdata[0]}, %{customdata[1]}</b><br>Raw: %{customdata[3]:$,.0f}/mo<br>COL index: %{customdata[2]}<br>Multiplier: %{customdata[4]:.3f}x (100 / index)<br>Adjusted: %{customdata[5]:$,.0f}/mo<extra></extra>",
@@ -273,10 +290,11 @@ function buildCountyViewData(input) {
   };
 }
 
-function buildMajorCityLabelsTrace() {
+function buildMajorCityLabelsTrace(isMobile) {
+  const mode = isMobile ? "markers" : "markers+text";
   return {
     type: "scattergeo",
-    mode: "markers+text",
+    mode,
     lat: MAJOR_CITIES.map((city) => city.lat),
     lon: MAJOR_CITIES.map((city) => city.lon),
     text: MAJOR_CITIES.map((city) => city.name),
@@ -333,9 +351,10 @@ function renderColExplain(input, useCountyCol) {
 
 function renderMap() {
   const input = parseInputs();
+  const isMobile = document.body.getAttribute("data-layout-mode") === "mobile";
   const useCountyCol = input.colAdjusted && Boolean(appState.countyGeoJson);
-  const mapTrace = useCountyCol ? buildCountyViewData(input) : buildStateViewData(input);
-  const cityTrace = buildMajorCityLabelsTrace();
+  const mapTrace = useCountyCol ? buildCountyViewData(input, isMobile) : buildStateViewData(input, isMobile);
+  const cityTrace = buildMajorCityLabelsTrace(isMobile);
   const visibleRegionCount = mapTrace.locations.length;
 
   const title = useCountyCol
@@ -344,7 +363,10 @@ function renderMap() {
   const thresholdText = `Threshold: ${currency(input.monthlyThreshold)}/mo`;
 
   Plotly.newPlot(dom.map, [mapTrace, cityTrace], {
-    title: { text: `${title}<br><sup>${thresholdText}</sup>`, font: { size: 18 } },
+    title: {
+      text: `${title}<br><sup>${thresholdText}</sup>`,
+      font: { size: isMobile ? 13 : 18 }
+    },
     geo: {
       scope: "usa",
       projection: { type: "albers usa" },
@@ -352,7 +374,8 @@ function renderMap() {
       landcolor: "#eef1f6",
       bgcolor: "#ffffff"
     },
-    margin: { t: 70, l: 10, r: 10, b: 10 }
+    margin: isMobile ? { t: 54, l: 6, r: 6, b: 6 } : { t: 70, l: 10, r: 10, b: 10 },
+    height: isMobile ? 560 : undefined
   });
 
   if (visibleRegionCount === 0) {
