@@ -215,11 +215,12 @@ function getColorbarConfig(title, isMobile) {
   }
   return {
     title: { text: title, side: "top", font: { size: 10 } },
-    thickness: 10,
-    len: 0.42,
-    x: 0.98,
-    xanchor: "right",
-    y: 0.02,
+    orientation: "h",
+    thickness: 8,
+    len: 0.62,
+    x: 0.5,
+    xanchor: "center",
+    y: 0.01,
     yanchor: "bottom",
     tickfont: { size: 9 },
     bgcolor: "rgba(255,255,255,0.75)"
@@ -374,7 +375,7 @@ function renderMap() {
       landcolor: "#eef1f6",
       bgcolor: "#ffffff"
     },
-    margin: isMobile ? { t: 54, l: 6, r: 6, b: 6 } : { t: 70, l: 10, r: 10, b: 10 },
+    margin: isMobile ? { t: 54, l: 6, r: 6, b: 28 } : { t: 70, l: 10, r: 10, b: 10 },
     height: isMobile ? 560 : undefined
   });
 
