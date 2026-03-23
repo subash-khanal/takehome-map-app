@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>US Take-Home Pay Explorer</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  </head>
+  <body>
+    <main class="container">
+      <h1>US Take-Home Pay Explorer</h1>
+      <p class="subtitle">
+        Enter annual gross income and tax status. Click states/counties on the map to estimate monthly take-home and optional cost-of-living adjusted value.
+      </p>
+
+      <section class="controls">
+        <label>
+          Gross annual income (USD)
+          <input id="grossIncome" type="number" min="0" step="1000" value="90000" />
+        </label>
+
+        <label>
+          Immigration / tax status
+          <select id="taxStatus">
+            <option value="citizen">US Citizen</option>
+            <option value="residentAlien5plus">Resident Alien (5+ years)</option>
+            <option value="nonResidentUnder5">Non-Resident Alien (&lt;5 years)</option>
+          </select>
+        </label>
+
+        <label>
+          Minimum monthly take-home threshold (USD)
+          <input id="monthlyThreshold" type="number" min="0" step="100" value="0" />
+        </label>
+
+        <label class="inline">
+          <input id="colToggle" type="checkbox" checked />
+          Adjust by local cost of living
+        </label>
+
+        <button id="refreshButton" type="button">Update Map</button>
+      </section>
+
+      <section id="summaryCards" class="summary-cards"></section>
+
+      <section id="map" class="map" aria-label="USA take-home pay map"></section>
+
+      <section id="selectionInfo" class="selection-info">
+        Click a state or county on the map to view details.
+      </section>
+
+      <section id="colExplain" class="selection-info">
+        Cost-of-living adjustment formula: adjusted = raw monthly take-home * (100 / COL index).
+      </section>
+
+      <section class="notes">
+        <h2>Assumptions (MVP)</h2>
+        <ul>
+          <li>Federal tax model is simplified single-filer brackets.</li>
+          <li>State taxes use real state bracket data (Tax Foundation dataset).</li>
+          <li>Social Security and Medicare (FICA) are estimated.</li>
+          <li>County-level COL proxy uses HUD Fair Market Rent (2-bedroom) index.</li>
+        </ul>
+        <h2>Data Sources</h2>
+        <ul class="sources">
+          <li>
+            US county boundaries (GeoJSON): <a href="https://github.com/plotly/datasets/blob/master/geojson-counties-fips.json" target="_blank" rel="noreferrer">Plotly Datasets</a>
+          </li>
+          <li>
+            State income tax brackets (CSV): <a href="https://github.com/TaxFoundation/facts-and-figures/blob/master/12-state-individual-income-tax.csv" target="_blank" rel="noreferrer">Tax Foundation Facts &amp; Figures</a>
+          </li>
+          <li>
+            County housing-cost proxy (2-bedroom FMR CSV): <a href="https://www.huduser.gov/Portal/datasets/FMR/FMR_2Bed_1983_2026.csv" target="_blank" rel="noreferrer">HUD Fair Market Rents</a>
+          </li>
+          <li>
+            Federal income tax brackets (single filer baseline): <a href="https://www.irs.gov/newsroom/irs-provides-tax-inflation-adjustments-for-tax-year-2024" target="_blank" rel="noreferrer">IRS 2024 Tax Inflation Adjustments</a>
+          </li>
+          <li>
+            FICA rates and wage base references: <a href="https://www.ssa.gov/oact/cola/cbb.html" target="_blank" rel="noreferrer">SSA Contribution and Benefit Base</a>, <a href="https://www.irs.gov/taxtopics/tc560" target="_blank" rel="noreferrer">IRS Additional Medicare Tax</a>
+          </li>
+          <li>
+            County COL index is computed as: county 2-bedroom FMR / national median 2-bedroom FMR * 100.
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
