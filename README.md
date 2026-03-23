@@ -9,6 +9,10 @@ Interactive browser app to estimate monthly take-home pay based on:
 - Threshold filter to display only regions above a minimum monthly value
 - Major US city labels for orientation on the map
 
+## Live Site
+
+<https://subash-khanal.github.io/takehome-map-app/>
+
 ## Run locally
 
 Because this is a static app, run it with any local web server.
