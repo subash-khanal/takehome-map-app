@@ -120,3 +120,32 @@ label.inline {
 .sources a {
   color: #2259d6;
 }
+
+body[data-layout-mode="mobile"] .container {
+  max-width: 560px;
+  padding: 12px;
+}
+
+body[data-layout-mode="mobile"] .controls {
+  grid-template-columns: 1fr;
+  gap: 10px;
+  padding: 10px;
+}
+
+body[data-layout-mode="mobile"] label.inline {
+  margin-top: 0;
+}
+
+body[data-layout-mode="mobile"] .summary-cards {
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+body[data-layout-mode="mobile"] .map {
+  min-height: 460px;
+}
+
+body[data-layout-mode="mobile"] .selection-info,
+body[data-layout-mode="mobile"] .card {
+  padding: 10px;
+}
