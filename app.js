@@ -99,7 +99,6 @@ const dom = {
   grossIncome: document.getElementById("grossIncome"),
   taxStatus: document.getElementById("taxStatus"),
   monthlyThreshold: document.getElementById("monthlyThreshold"),
-  layoutMode: document.getElementById("layoutMode"),
   colToggle: document.getElementById("colToggle"),
   refreshButton: document.getElementById("refreshButton"),
   map: document.getElementById("map"),
@@ -132,8 +131,9 @@ function parseInputs() {
   return { grossIncome, taxStatus, monthlyThreshold, colAdjusted };
 }
 
-function applyLayoutMode(mode) {
-  const normalized = mode === "mobile" ? "mobile" : "desktop";
+function applyAutoLayoutMode() {
+  const mobileViewport = window.matchMedia("(max-width: 768px)").matches;
+  const normalized = mobileViewport ? "mobile" : "desktop";
   document.body.setAttribute("data-layout-mode", normalized);
   // Let CSS settle, then resize plot to avoid clipped map.
   setTimeout(() => {
@@ -488,7 +488,7 @@ async function boot() {
 dom.refreshButton.addEventListener("click", renderMap);
 dom.colToggle.addEventListener("change", renderMap);
 dom.monthlyThreshold.addEventListener("change", renderMap);
-dom.layoutMode.addEventListener("change", () => applyLayoutMode(dom.layoutMode.value));
+window.addEventListener("resize", applyAutoLayoutMode);
 
-applyLayoutMode(dom.layoutMode.value);
+applyAutoLayoutMode();
 boot();
